@@ -105,7 +105,7 @@ public class CustomerView {
     }
 
     public void addNewCustomer(){
-
+            sc.nextLine();
             System.out.println("Enter your Customer Details : ");
             
             FormIO formIO = new FormIO(sc);

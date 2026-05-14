@@ -1,6 +1,6 @@
 package model;
 
-import util.idGenerator;
+import util.IdGenerator;
 
 public class Customer {
 
@@ -32,7 +32,7 @@ public class Customer {
     }
 
     public void generateCustomerId() {
-        this.customerId = idGenerator.generateId();
+        this.customerId = IdGenerator.generateCustomerId();
     }
 
     public String getName() {

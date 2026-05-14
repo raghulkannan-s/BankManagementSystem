@@ -1,6 +1,10 @@
 package util;
 
 import java.util.Scanner;
+import model.Customer;
+import model.account.Account;
+import service.AccountService;
+import service.CustomerService;
 
 public class FormIO {
 
@@ -21,6 +25,21 @@ public class FormIO {
             else System.err.println("Please enter a valid Customer ID");
         }
         return customerId;
+    }
+
+    public long getValidAccountNumber(){
+
+        long accountNumber;
+
+        while( true ){
+            System.out.print("Enter account Number : ");
+            accountNumber = sc.nextInt();
+            sc.nextLine();
+
+            if( accountNumber == 9 || accountNumber > 1000000000L ) break;
+            else System.err.println("Please enter a valid account number");
+        }
+        return accountNumber;
     }
 
     public String getValidName( ){
@@ -87,5 +106,51 @@ public class FormIO {
         return address;
     }
 
+    public int getExistingValidCustomerId(CustomerService customerService){
+
+        int customerId;
+
+        while( true ){
+            
+            System.out.println("Press 9 to Exit!");
+            System.out.println("Enter Customer ID : ");
+
+            customerId = getValidCustomerId();
+            
+            if( customerId == 9 ) return 0;
+
+            Customer customer = customerService.getCustomerById(customerId);
+            
+            if( customer == null ) System.out.println("Customer ID doesn't Exist"); 
+            else {
+                System.out.println("Welcome "+ customer.getName());
+                break;
+            }
+        }
+        return customerId;
+    }
+    
+    public Account getExistingValidAccount(AccountService accountService){
+
+        Account account;
+
+        while( true ){
+            
+            System.out.println("Press 9 to Exit!");
+            System.out.println("Enter Account Number : ");
+
+            long accountNumber = getValidAccountNumber();
+            
+            if( accountNumber == 9 ) return null;
+
+            account = accountService.getAccountByNumber(accountNumber);
+            
+            if( account == null ) System.out.println("Account Number doesn't Exist"); 
+            else {
+                break;
+            }
+        }
+        return account;
+    }
 
 }

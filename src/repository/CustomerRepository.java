@@ -16,12 +16,10 @@ public class CustomerRepository {
 
     public Result addNewCustomer( Customer customer ){
 
-        if( customers.containsKey(customer.getCustomerId()) ){
-            return new Result(false, "Customer Already Exist");
-        }
         customer.generateCustomerId();
         customers.put( customer.getCustomerId(), customer );
-        return new Result(true, customer.getName() + " - Customer Added Successfully");
+        return new Result(true, customer.getName() + " - Customer Added Successfully \n Customer ID : " + customer.getCustomerId());
+    
     }
 
     public List<Customer> getAllCustomers(){
