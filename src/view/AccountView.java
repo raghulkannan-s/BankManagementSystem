@@ -1,7 +1,6 @@
 package view;
 
 import enums.ACCOUNT_TYPE;
-import factory.AccountFactory;
 import java.util.Scanner;
 import model.account.Account;
 import service.AccountService;
@@ -14,30 +13,39 @@ import util.FormIO;
 public class AccountView {
 
     private Scanner sc;
-    private FormIO formIO = new FormIO(sc);
     private AccountService accountService;
     private CustomerService customerService;
-    private AccountFactory accountFactory;
-
-    public AccountView(Scanner sc, AccountService accountService, CustomerService customerService, AccountFactory accountFactory) {
+    private FormIO formIO;
+    
+    public AccountView(Scanner sc, AccountService accountService, CustomerService customerService, FormIO formIO) {
         this.sc = sc;
         this.accountService = accountService;
         this.customerService = customerService;
-        this.accountFactory = accountFactory;
+        this.formIO = formIO;
     }
-
+  
     public void start() {
 
         while ( true ) {
 
-            System.out.println("Account Service");
-            System.out.println("1. Create Account");
-            System.out.println("2. View Account Details");
-            System.out.println("3. Check Balance");
-            System.out.println("4. Close Account");
-            System.out.println("5. Back to Main Menu");
+            System.out.println("\n========================================");
+            System.out.println("            ACCOUNT SERVICES            ");
+            System.out.println("========================================");
+            System.out.println("  1. Create New Account");
+            System.out.println("  2. View Account Details");
+            System.out.println("  3. Check Balance");
+            System.out.println("  4. Close Account");
+            System.out.println("  5. Go Back to Main Menu");
+            System.out.println("========================================");
+            System.out.print("Select an option: ");
 
-            int choice = sc.nextInt();
+            int choice = -1;
+            try {
+                choice = Integer.parseInt(sc.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+                continue;
+            }
 
             switch (choice) {
                 case 1:
@@ -77,7 +85,8 @@ public class AccountView {
             System.out.println("2. Current ");
             System.out.println("===========================");
             
-            int accChoice = sc.nextInt();
+            System.out.print("Select an option: ");
+            int accChoice = formIO.getIntInput();
 
             switch (accChoice) {
                 case 1 -> {
@@ -95,7 +104,7 @@ public class AccountView {
         while( true ){
             System.out.println("Enter initial deposit : ");
 
-            initialDeposit = sc.nextInt();
+            initialDeposit = formIO.getDoubleInput();
 
             if( initialDeposit < 500 ) System.out.println("Please Enter a Amount >= 500 !");
             else break;
@@ -103,8 +112,7 @@ public class AccountView {
         }
 
 
-        Account acc = accountFactory.createAccount(customerId, initialDeposit, account_type);
-        accountService.addNewAccount(acc);
+        Account acc = accountService.createAndSaveAccount(customerId, initialDeposit, account_type);
         System.out.println("Account created Successfully!");
         System.out.println("Account No : " + acc.getAccountNumber());
 

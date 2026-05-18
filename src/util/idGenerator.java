@@ -1,20 +1,23 @@
 package util;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 public class IdGenerator {
 
-    private static int customerCounter = 1000;
-    private static long accountCounter = 1000000000L;
-    private static int transactionCounter = 1;
+    private static AtomicInteger customerCounter = new AtomicInteger(1000);
+    private static AtomicLong accountCounter = new AtomicLong(1000000000L);
+    private static AtomicInteger transactionCounter = new AtomicInteger(1);
 
     public static int generateCustomerId() {
-        return ++customerCounter;
+        return customerCounter.incrementAndGet();
     }
 
     public static long generateAccountNumber() {
-        return ++accountCounter;
+        return accountCounter.incrementAndGet();
     }
 
     public static int generateTransactionId() {
-        return ++transactionCounter;
+        return transactionCounter.incrementAndGet();
     }
 }

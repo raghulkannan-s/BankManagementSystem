@@ -77,14 +77,9 @@ public class Customer {
 
     @Override
     public String toString() {
-
-        return "Customer{" +
-                "customerId=" + customerId +
-                ", name='" + name + '\'' +
-                ", age=" + age +
-                ", mobile='" + mobile + '\'' +
-                ", email='" + email + '\'' +
-                ", address='" + address + '\'' +
-                '}';
+        return String.format(
+            "| ID: %-5d | Name: %-15s | Age: %-3d | Mobile: %-12s | Email: %-25s | Address: %-20s |",
+            customerId, name, age, mobile, email, address
+        );
     }
 }

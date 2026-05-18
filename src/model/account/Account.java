@@ -10,13 +10,15 @@ public abstract class Account {
     private long accountNumber;
     private double balance;
     private ACCOUNT_STATUS accountStatus;
-    private double minimumBalance;
     private ACCOUNT_TYPE account_type;
+    private double minimumBalance;
 
-    public Account(int CustomerId, double balance, ACCOUNT_TYPE account_type) {
+    public Account(int CustomerId, double balance, ACCOUNT_TYPE account_type, double minimumBalance) {
         this.CustomerId = CustomerId;
         this.balance = balance;
         this.account_type = account_type;
+        this.minimumBalance = minimumBalance;
+        this.accountStatus = ACCOUNT_STATUS.ACTIVE;
     }
 
     public void generateAccountNumber() {
@@ -55,14 +57,6 @@ public abstract class Account {
         this.accountStatus = accountStatus;
     }
 
-    public double getMinimumBalance() {
-        return minimumBalance;
-    }
-
-    public void setMinimumBalance(double minimumBalance) {
-        this.minimumBalance = minimumBalance;
-    }
-
     public ACCOUNT_TYPE getAccount_type() {
         return account_type;
     }
@@ -71,19 +65,20 @@ public abstract class Account {
         this.account_type = account_type;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Account{");
-        sb.append("CustomerId=").append(CustomerId);
-        sb.append(", accountNumber=").append(accountNumber);
-        sb.append(", balance=").append(balance);
-        sb.append(", accountStatus=").append(accountStatus);
-        sb.append(", minimumBalance=").append(minimumBalance);
-        sb.append(", account_type=").append(account_type);
-        sb.append('}');
-        return sb.toString();
+    public double getMinimumBalance() {
+        return minimumBalance;
     }
 
+    public void setMinimumBalance(double minimumBalance) {
+        this.minimumBalance = minimumBalance;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "| Account No: %-12d | Type: %-8s | Status: %-8s | Balance: $%.2f | Min Bal: $%.2f | Cust ID: %d |",
+            accountNumber, account_type, accountStatus, balance, minimumBalance, CustomerId
+        );
+    }
 }
 

@@ -7,19 +7,16 @@ import model.account.SavingAccount;
 
 public class AccountFactory {
 
-    public Account createAccount(int customerId, double minimumBalance,  ACCOUNT_TYPE account_type){
+    public Account createAccount(int customerId, double initialDeposit,  ACCOUNT_TYPE account_type){
 
-        Account account = null;
+        Account account;
 
         switch (account_type){
-            case ACCOUNT_TYPE.SAVINGS :
-                account =  new SavingAccount(customerId, minimumBalance, account_type);
-                break;
-            case ACCOUNT_TYPE.CURRENT:
-                account = new CurrentAccount(customerId, minimumBalance, account_type);
-                break;
-            default:
+            case ACCOUNT_TYPE.SAVINGS -> account =  new SavingAccount(customerId, initialDeposit, account_type);
+            case ACCOUNT_TYPE.CURRENT -> account = new CurrentAccount(customerId, initialDeposit, account_type);
+            default -> {
                 return null;
+            }
         }
 
         return account;

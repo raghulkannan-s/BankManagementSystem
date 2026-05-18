@@ -14,6 +14,11 @@ public class CustomerService {
         this.customerRepository = customerRepository;
     }
 
+    public Result createAndSaveCustomer(String name, int age, String mobile, String email, String address) {
+        Customer customer = new Customer(name, age, mobile, email, address);
+        return customerRepository.addNewCustomer(customer);
+    }
+
     public Result addNewCustomer(Customer customer){
         return customerRepository.addNewCustomer(customer);
     }

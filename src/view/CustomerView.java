@@ -9,57 +9,68 @@ import util.FormIO;
 
 public class CustomerView {
 
-    Scanner sc;
-    CustomerService customerService;
+    private Scanner sc;
+    private CustomerService customerService;
+    private FormIO formIO;
 
-    public CustomerView(Scanner sc, CustomerService customerService) {
+    public CustomerView(Scanner sc, CustomerService customerService, FormIO formIO) {
         this.sc = sc;
         this.customerService = customerService;
+        this.formIO = formIO;
     }
 
     public void start(){
 
-        System.out.println("================================");
-        System.out.println("Select Your Customer Service :");
-        System.out.println("1. Add New Customer ");
-        System.out.println("2. View Customer Details ");
-        System.out.println("3. Update Customer Details");
-        System.out.println("4. Search Customer ");
-        System.out.println("5. View All Customer ");
-        System.out.println("6. Go Back to Main Menu ");
-        System.out.println("================================");
+        while (true) {
+            System.out.println("\n========================================");
+            System.out.println("          CUSTOMER SERVICES             ");
+            System.out.println("========================================");
+            System.out.println("  1. Add New Customer");
+            System.out.println("  2. View Customer Details");
+            System.out.println("  3. Update Customer Details");
+            System.out.println("  4. Search Customer By Name");
+            System.out.println("  5. View All Customers");
+            System.out.println("  6. Go Back to Main Menu");
+            System.out.println("========================================");
+            System.out.print("Select an option: ");
 
-        int choice = sc.nextInt();
+            int choice = -1;
+            try {
+                choice = Integer.parseInt(sc.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+                continue;
+            }
 
 
-        switch (choice) {
-            case 1:
-                addNewCustomer();
-                break;
-            case 2:
-                getCustomerDetails();
-                break;
-            case 3:
-                updateCustomerDetails();
-                break;
-            case 4:
-                searchCustomerByName();
-                break;
-            case 5:
-                viewAllCustomers();
-                break;
-            case 6:
-                return;
-            default:
-                throw new AssertionError();
+            switch (choice) {
+                case 1:
+                    addNewCustomer();
+                    break;
+                case 2:
+                    getCustomerDetails();
+                    break;
+                case 3:
+                    updateCustomerDetails();
+                    break;
+                case 4:
+                    searchCustomerByName();
+                    break;
+                case 5:
+                    viewAllCustomers();
+                    break;
+                case 6:
+                    return;
+                default:
+                    System.out.println("Wrong Choice!");
+            }
         }
-
     }
 
     public void searchCustomerByName(){
 
         System.out.println("Enter the Customer Name to search : ");
-        String name = sc.next();
+        String name = formIO.getStringInput();
         List<Customer> customers = customerService.searchCustomerByName(name);
 
         if( customers == null ){
@@ -76,7 +87,7 @@ public class CustomerView {
 
     public void searchCustomerById(){
         System.out.println("Enter the Customer ID to search : ");
-        int customerId = sc.nextInt();
+        int customerId = formIO.getIntInput();
         Customer customer = customerService.getCustomerById(customerId);
         if( customer == null ){
             System.err.println("No Data Found");
@@ -105,10 +116,7 @@ public class CustomerView {
     }
 
     public void addNewCustomer(){
-            sc.nextLine();
             System.out.println("Enter your Customer Details : ");
-            
-            FormIO formIO = new FormIO(sc);
 
             String name = formIO.getValidName();
             int age = formIO.getValidAge();
@@ -116,7 +124,7 @@ public class CustomerView {
             String email = formIO.getValidEmail();
             String address = formIO.getValidAddress();
 
-            Result res = customerService.addNewCustomer( new Customer(name, age, mobile, email, address) );
+            Result res = customerService.createAndSaveCustomer(name, age, mobile, email, address);
 
             System.out.println(res.getMessage());
 
@@ -125,7 +133,7 @@ public class CustomerView {
     public void getCustomerDetails(){
 
         System.out.println("Enter the Customer ID : ");
-        int customerId = sc.nextInt();
+        int customerId = formIO.getValidCustomerId();
 
         Customer customer = customerService.getCustomerById(customerId);
 
@@ -140,8 +148,7 @@ public class CustomerView {
     public void updateCustomerDetails(){
 
         System.out.print("Enter Customer ID to Update : ");
-        int customerId = sc.nextInt();
-        FormIO formIO = new FormIO(sc);
+        int customerId = formIO.getValidCustomerId(); 
 
         Customer customer = customerService.getCustomerById(customerId);
 
@@ -170,7 +177,8 @@ public class CustomerView {
             System.out.println("5. Address");
             System.out.println("6. Done");
             
-            int fieldChoice = sc.nextInt();
+            System.out.print("Select an option: ");
+            int fieldChoice = formIO.getIntInput();
 
             switch (fieldChoice) {
                 case 1:

@@ -24,7 +24,6 @@ public class CustomerRepository {
 
     public List<Customer> getAllCustomers(){
         return new ArrayList<>(customers.values());
-
     }
 
     public Customer getCustomerById(int customerId ){
