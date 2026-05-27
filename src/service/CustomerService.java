@@ -1,6 +1,7 @@
 package service;
 
 import dto.Result;
+import exception.CustomerNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Customer;
@@ -24,7 +25,11 @@ public class CustomerService {
     }
 
     public Customer getCustomerById( int customerId ){
-        return customerRepository.getCustomerById(customerId);
+        Customer customer = customerRepository.getCustomerById(customerId);
+        if( customer == null ){
+            throw new CustomerNotFoundException("Customer ID doesn't Exist");
+        }
+        return customer;
     }
 
     public Result updateCustomerDetails( int customerId, Customer customer ){

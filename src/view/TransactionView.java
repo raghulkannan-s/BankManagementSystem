@@ -1,5 +1,8 @@
 
 package view;
+import exception.AccountInactiveException;
+import exception.AccountNotFoundException;
+import exception.InsufficientBalanceException;
 import java.util.Scanner;
 import model.account.Account;
 import service.AccountService;
@@ -55,32 +58,26 @@ public class TransactionView {
 
     private void deposit(){
         
-        Account account = formIO.getExistingValidAccount(accountService);
+        Account account = getExistingValidAccount();
+        if( account == null ) return;
         double amount = formIO.getValidAmount();
 
         double balance = transactionService.deposit(account, amount);
-
-        if( balance == -2 ){
-            System.out.println("Your Account is Blocked, Contact Branch!");
-            return;
-        }
-
         System.out.println("Your Balance : " + balance );
         
     }
     
     private void withdraw(){
         
-        Account account = formIO.getExistingValidAccount(accountService);
+        Account account = getExistingValidAccount();
+        if( account == null ) return;
         double amount = formIO.getValidAmount();
 
-        double balance = transactionService.withdraw(account, amount);
-
-        if(balance == -1){
-            System.out.println("Your Balance is too low to withdraw!");
-        }
-        else{
+        try {
+            double balance = transactionService.withdraw(account, amount);
             System.out.println("Your Balance : " + balance );
+        } catch( InsufficientBalanceException e ){
+            System.out.println(e.getMessage());
         }
 
     }
@@ -88,10 +85,12 @@ public class TransactionView {
     private void fundTransfer(){
         
         System.out.println("Enter \"FROM ACCOUNT\" number ");
-        Account fromAccount = formIO.getExistingValidAccount(accountService);
+        Account fromAccount = getExistingValidAccount();
+        if( fromAccount == null ) return;
         
         System.out.println("Enter \"TO ACCOUNT\" number");
-        Account toAccount = formIO.getExistingValidAccount(accountService);
+        Account toAccount = getExistingValidAccount();
+        if( toAccount == null ) return;
 
         if( fromAccount.getAccountNumber() == toAccount.getAccountNumber() ){
             System.err.println("Sender and Receiver Can't be same!!");
@@ -101,16 +100,29 @@ public class TransactionView {
         System.out.println("Enter amount : ");
         double amount = formIO.getValidAmount();
         
-        boolean hasAmount = accountService.checkIfHasAmount(fromAccount, amount);
-        
-        if( !hasAmount ){
+        try {
+            transactionService.transfer(fromAccount, toAccount, amount);
+            System.out.println("Amount transferred Successfully!");
+        } catch( InsufficientBalanceException e ){
             System.err.println("Sorry you don't have enough balance to transfer");
-            return;
         }
-        
-        transactionService.transfer(fromAccount, toAccount, amount);
-        System.out.println("Amount transferred Successfully!");
 
+    }
+
+    private Account getExistingValidAccount(){
+        while( true ){
+            System.out.println("Enter Account Number : ");
+            System.out.println("Press 9 to Exit!");
+            long accountNumber = formIO.getValidAccountNumber();
+
+            if( accountNumber == 9 ) return null;
+
+            try {
+                return accountService.getActiveAccountByNumber(accountNumber);
+            } catch( AccountNotFoundException | AccountInactiveException e ){
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
 

@@ -1,6 +1,9 @@
 package service;
 
+import enums.ACCOUNT_STATUS;
 import enums.ACCOUNT_TYPE;
+import exception.AccountInactiveException;
+import exception.AccountNotFoundException;
 import factory.AccountFactory;
 import java.util.List;
 import model.account.Account;
@@ -25,7 +28,19 @@ public class AccountService {
     }
 
     public Account getAccountByNumber(long accountNumber){
-        return accountRepository.getAccountByNumber(accountNumber);
+        Account account = accountRepository.getAccountByNumber(accountNumber);
+        if( account == null ){
+            throw new AccountNotFoundException("Account Number doesn't Exist");
+        }
+        return account;
+    }
+
+    public Account getActiveAccountByNumber(long accountNumber){
+        Account account = getAccountByNumber(accountNumber);
+        if( account.getAccountStatus() == ACCOUNT_STATUS.INACTIVE ){
+            throw new AccountInactiveException("Account is INACTIVE, Contact Branch!!");
+        }
+        return account;
     }
 
      public List<Account> getAllAccounts(){

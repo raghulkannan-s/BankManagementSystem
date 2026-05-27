@@ -1,11 +1,6 @@
 package util;
 
-import enums.ACCOUNT_STATUS;
 import java.util.Scanner;
-import model.Customer;
-import model.account.Account;
-import service.AccountService;
-import service.CustomerService;
 
 public class FormIO {
 
@@ -148,45 +143,4 @@ public class FormIO {
         return address;
     }
 
-    public int getExistingValidCustomerId(CustomerService customerService){
-        int customerId;
-        while( true ){
-            System.out.println("Enter Customer ID : ");
-            System.out.println("Press 9 to Exit!");
-            customerId = getValidCustomerId();
-            
-            if( customerId == 9 ) return 0;
-            
-            Customer customer = customerService.getCustomerById(customerId);
-            
-            if( customer == null ) System.out.println("Customer ID doesn't Exist"); 
-            else {
-                System.out.println("Welcome "+ customer.getName());
-                break;
-            }
-        }
-        return customerId;
-    }
-    
-    public Account getExistingValidAccount(AccountService accountService){
-        Account account;
-        while( true ){
-            System.out.println("Enter Account Number : ");
-            System.out.println("Press 9 to Exit!");
-            long accountNumber = getValidAccountNumber();
-            
-            if( accountNumber == 9 ) return null;
-
-            account = accountService.getAccountByNumber(accountNumber);
-            
-            if( account == null ) System.out.println("Account Number doesn't Exist"); 
-            else if( account.getAccountStatus() == ACCOUNT_STATUS.INACTIVE ){
-                System.out.println("Account is INACTIVE, Contact Branch!!"); 
-            }
-            else {
-                break;
-            }
-        }
-        return account;
-    }
 }

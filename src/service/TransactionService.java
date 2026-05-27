@@ -1,6 +1,7 @@
 package service;
 
 import enums.TRANSACTION_TYPE;
+import exception.InsufficientBalanceException;
 import model.account.Account;
 
 public class TransactionService {
@@ -24,7 +25,7 @@ public class TransactionService {
     public double withdraw(Account account, double amount){
 
         if( (account.getBalance() - account.getMinimumBalance()) < amount ){
-            return -1;
+            throw new InsufficientBalanceException("Your Balance is too low to withdraw!");
         }
 
         account.setBalance(account.getBalance()-amount);

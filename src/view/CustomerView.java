@@ -1,6 +1,7 @@
 package view;
 
 import dto.Result;
+import exception.CustomerNotFoundException;
 import java.util.List;
 import java.util.Scanner;
 import model.Customer;
@@ -88,12 +89,12 @@ public class CustomerView {
     public void searchCustomerById(){
         System.out.println("Enter the Customer ID to search : ");
         int customerId = formIO.getIntInput();
-        Customer customer = customerService.getCustomerById(customerId);
-        if( customer == null ){
+        try {
+            Customer customer = customerService.getCustomerById(customerId);
+            System.out.println(customer);
+        } catch( CustomerNotFoundException e ){
             System.err.println("No Data Found");
-            return;
         }
-        System.out.println(customer);
     }
 
     public void viewAllCustomers(){
@@ -135,14 +136,12 @@ public class CustomerView {
         System.out.println("Enter the Customer ID : ");
         int customerId = formIO.getValidCustomerId();
 
-        Customer customer = customerService.getCustomerById(customerId);
-
-        if( customer == null ){
+        try {
+            Customer customer = customerService.getCustomerById(customerId);
+            System.out.println(customer);
+        } catch( CustomerNotFoundException e ){
             System.err.println("No Data Found");
-            return;
         }
-
-        System.out.println(customer);
     }
 
     public void updateCustomerDetails(){
@@ -150,9 +149,10 @@ public class CustomerView {
         System.out.print("Enter Customer ID to Update : ");
         int customerId = formIO.getValidCustomerId(); 
 
-        Customer customer = customerService.getCustomerById(customerId);
-
-        if( customer == null ){
+        Customer customer;
+        try {
+            customer = customerService.getCustomerById(customerId);
+        } catch( CustomerNotFoundException e ){
             System.err.println("No Data Found");
             return;
         }

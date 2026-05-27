@@ -1,7 +1,11 @@
 package view;
 
 import enums.ACCOUNT_TYPE;
+import exception.AccountInactiveException;
+import exception.AccountNotFoundException;
+import exception.CustomerNotFoundException;
 import java.util.Scanner;
+import model.Customer;
 import model.account.Account;
 import service.AccountService;
 import service.CustomerService;
@@ -71,7 +75,22 @@ public class AccountView {
 
     private void createAccount() {
 
-        int customerId = formIO.getExistingValidCustomerId(customerService);
+        int customerId;
+        while( true ){
+            System.out.println("Enter Customer ID : ");
+            System.out.println("Press 9 to Exit!");
+            customerId = formIO.getValidCustomerId();
+
+            if( customerId == 9 ) return;
+
+            try {
+                Customer customer = customerService.getCustomerById(customerId);
+                System.out.println("Welcome "+ customer.getName());
+                break;
+            } catch( CustomerNotFoundException e ){
+                System.out.println(e.getMessage());
+            }
+        }
 
         double initialDeposit;
         ACCOUNT_TYPE account_type;
@@ -120,20 +139,39 @@ public class AccountView {
     }
 
     private void viewAccountDetails() {
-        Account account = formIO.getExistingValidAccount(accountService);
+        Account account = getExistingValidAccount();
+        if( account == null ) return;
         System.out.println(account);
     }
 
     private void checkBalance() {
-        Account account = formIO.getExistingValidAccount(accountService);
+        Account account = getExistingValidAccount();
+        if( account == null ) return;
         System.out.println("Your Balance : " + account.getBalance());
 
     }
 
     private void closeAccount() {
-        Account account = formIO.getExistingValidAccount(accountService);
+        Account account = getExistingValidAccount();
+        if( account == null ) return;
         if( account.getBalance() > 0 ) System.out.println("Please Withdraw All your money Before Deleting the account");
         else accountService.closeAccount(account.getAccountNumber());
+    }
+
+    private Account getExistingValidAccount(){
+        while( true ){
+            System.out.println("Enter Account Number : ");
+            System.out.println("Press 9 to Exit!");
+            long accountNumber = formIO.getValidAccountNumber();
+
+            if( accountNumber == 9 ) return null;
+
+            try {
+                return accountService.getActiveAccountByNumber(accountNumber);
+            } catch( AccountNotFoundException | AccountInactiveException e ){
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
 

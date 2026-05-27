@@ -1,6 +1,8 @@
 
 package view;
 
+import exception.AccountInactiveException;
+import exception.AccountNotFoundException;
 import java.util.List;
 import java.util.Scanner;
 import model.Customer;
@@ -91,13 +93,31 @@ public class AdminView {
     }
 
     public void blockAccount(){
-        Account account = formIO.getExistingValidAccount(accountService);
+        Account account = getExistingValidAccount();
+        if( account == null ) return;
         adminService.blockAccount(account);
     }
     
     public void unblockAccount(){
-        Account account = formIO.getExistingValidAccount(accountService);
+        Account account = getExistingValidAccount();
+        if( account == null ) return;
         adminService.unblockAccount(account);
+    }
+
+    private Account getExistingValidAccount(){
+        while( true ){
+            System.out.println("Enter Account Number : ");
+            System.out.println("Press 9 to Exit!");
+            long accountNumber = formIO.getValidAccountNumber();
+
+            if( accountNumber == 9 ) return null;
+
+            try {
+                return accountService.getActiveAccountByNumber(accountNumber);
+            } catch( AccountNotFoundException | AccountInactiveException e ){
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     
